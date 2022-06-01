@@ -14,29 +14,25 @@ exports.sourceNodes = async (
 ) => {
   const { urls } = pluginOptions;
 
-  const c = [];
-
   for (const url of urls) {
     const result = await (await axios.get(url)).data;
     const fileName = url.split("/").pop();
-    c.push({
+    const f = {
       name: fileName,
       content: result,
-    });
-  }
+    };
 
-  for (const file of c) {
     createNode({
       // nameWithOwner and url are arbitrary fields from the data
-      ...file,
+      ...f,
       // required fields
-      id: createNodeId(`${file.name}`),
+      id: createNodeId(`${f.name}`),
       parent: null,
       children: [],
       internal: {
         type: `githubFile`,
-        content: JSON.stringify(file.content),
-        contentDigest: createContentDigest(file),
+        content: JSON.stringify(f.content),
+        contentDigest: createContentDigest(f),
       },
     });
   }
